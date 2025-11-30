@@ -19,13 +19,15 @@ import useScrollTrigger from '@mui/material/useScrollTrigger'; // Import useScro
 import Slide from '@mui/material/Slide'; // Import Slide for AppBar hide effect
 import AnchorTemporaryDrawer from './components/home/AnchorTemporaryDrawer';
 import { Link } from '@mui/material';
+import { useAuth } from './context/AuthContext';
 
 const drawerWidth = 240;
 const navItems = [
   { label: 'Home', path: '/home' },
   { label: 'Garden', path: '/garden' },
   { label: 'Explore', path: '/explore' },
-  { label: 'My Garden', path: '/my-garden' }
+  { label: 'My Garden', path: '/my-garden' },
+  { label: 'Games', path: '/games' }
 ];
 
 // Hide-on-scroll AppBar
@@ -49,6 +51,7 @@ function DrawerAppBar(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const navigate = useNavigate(); // Initialize the navigate hook
+  const { user } = useAuth(); // Get user from context
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -61,7 +64,7 @@ function DrawerAppBar(props) {
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Typography variant="h6" sx={{ my: 2, color: '#487307', fontWeight: 'bold' }} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-        <GrassIcon fontSize="large" />ASHOKA
+        <GrassIcon fontSize="large" />AROMA
       </Typography>
       <Divider />
       <List>
@@ -72,8 +75,15 @@ function DrawerAppBar(props) {
             </Link>
           </ListItem>
         ))}
+        {!user && (
+          <ListItem disablePadding>
+            <Link variant='body1' padding={'16px 6px'} sx={{ textAlign: 'center', cursor: 'pointer' }} onClick={() => handleNavClick('/login-page')}>
+              <ListItemText primary="Login" />
+            </Link>
+          </ListItem>
+        )}
       </List>
-      <AnchorTemporaryDrawer />
+      {user && <AnchorTemporaryDrawer />}
     </Box>
   );
 
@@ -110,12 +120,12 @@ function DrawerAppBar(props) {
               <Box>
                 <GrassIcon fontSize="large" />
               </Box>
-              ASHOKA
+              AROMA
             </Typography>
             <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: '30px' }}>
               {navItems.map((item) => (
                 <Link
-                variant='body1'
+                  variant='body1'
                   padding={'16px 6px'}
                   key={item.label}
                   sx={{
@@ -129,13 +139,18 @@ function DrawerAppBar(props) {
                   {item.label}
                 </Link>
               ))}
-              {false?<></>:<>
-              <Button variant='outlined' color='white' width='fit-content'>
-                Dashboard
-              </Button>
-              <AnchorTemporaryDrawer />
-              </>
-              }
+
+              {!user ? (
+                <Button
+                  variant='outlined'
+                  sx={{ color: 'white', borderColor: 'white', '&:hover': { borderColor: 'black', color: 'black' } }}
+                  onClick={() => handleNavClick('/login-page')}
+                >
+                  Login
+                </Button>
+              ) : (
+                <AnchorTemporaryDrawer />
+              )}
             </Box>
           </Toolbar>
         </AppBar>

@@ -2,113 +2,117 @@ import React, { useState } from 'react';
 import GrassIcon from '@mui/icons-material/Grass';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
-import { Stack, Button, Divider, Link, TextField, Typography, Box, IconButton, OutlinedInput, InputLabel, InputAdornment, FormControl, Alert, MenuItem, useTheme, useMediaQuery } from '@mui/material';
+import { Stack, Button, Divider, Link, TextField, Typography, Box, IconButton, OutlinedInput, InputLabel, InputAdornment, FormControl, MenuItem, useTheme, useMediaQuery, Alert } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import axios from 'axios';
+import { registerUser, loginUser } from '../services/ApiClient';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function LoginPage() {
-  
-  const theme = useTheme();
 
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const Categories = [
-    {
-      value: '1',
-      label: 'Student',
-    },
-    {
-      value: '2',
-      label: 'Researcher',
-    },
-    {
-      value: '3',
-      label: 'Enthusiast',
-    },
-    {
-      value: '4',
-      label: 'Educator',
-    }
+    { value: 'Student', label: 'Student' },
+    { value: 'Researcher', label: 'Researcher' },
+    { value: 'Enthusiast', label: 'Enthusiast' },
+    { value: 'Educator', label: 'Educator' }
   ];
+
+  const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [newUserDetails, setNewUserDetails] = useState({
+  const [userDetails, setUserDetails] = useState({
     name: '',
     email: '',
     password: '',
-    selectCategory:''
+    role: '',
+    college: '',
+    phone: ''
   });
+  const [error, setError] = useState('');
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleUserDetailsCreate = (event) => {
+  const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setNewUserDetails((prevDetails) => ({
-      ...prevDetails,
-      [name]: value,
-    }));
+    setUserDetails((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleUserDetailsCreateSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
+    setError('');
     try {
-      const response = await axios.post('http://localhost:3001/register', newUserDetails, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-      console.log(response.data);
+      let response;
+      if (isLogin) {
+        response = await loginUser(userDetails.email, userDetails.password);
+      } else {
+        response = await registerUser(userDetails);
+      }
+      console.log('Success:', response);
+      login(response); // Use context login
+      navigate('/home'); // Redirect to home/dashboard
     } catch (err) {
       console.error(err);
+      setError(err.response?.data?.error || err.message || 'An error occurred');
     }
   };
-
 
   const handleMouseDownPassword = (event) => event.preventDefault();
   const handleMouseUpPassword = (event) => event.preventDefault();
 
   return (
     <Stack maxWidth={'30rem'} gap={'3px'} sx={{ p: '8px 26px' }} justifyContent={'center'} alignItems={'center'}>
-      <GrassIcon sx={{ fontSize: isMobile?'35px':'50px', color: 'green' }} />
-      <Typography variant={isMobile?"h5":'h4'} color='success' textAlign={'center'}>
-        Ashoka 3D Virtual Herbal
+      <GrassIcon sx={{ fontSize: isMobile ? '35px' : '50px', color: 'green' }} />
+      <Typography variant={isMobile ? "h5" : 'h4'} color='success' textAlign={'center'}>
+        AROMA 3D Virtual Herbal
       </Typography>
-      <Typography variant={isMobile?"h5":'h4'} color='success' textAlign={'center'}>
+      <Typography variant={isMobile ? "h5" : 'h4'} color='success' textAlign={'center'}>
         Garden
       </Typography>
       <Typography color='#1cce39'>
         Connect with nature, digitally
       </Typography>
-      <form style={{ width: '100%' }}>
-        <TextField
-          id="name"
-          name='name'
-          label="Name"
-          size='small'
-          color='success'
-          value={newUserDetails.name}
-          onChange={handleUserDetailsCreate}
-          fullWidth
-        />
+
+      {error && <Alert severity="error" sx={{ width: '100%', mt: 2 }}>{error}</Alert>}
+
+      <form style={{ width: '100%', marginTop: '20px' }} onSubmit={handleSubmit}>
+        {!isLogin && (
+          <TextField
+            name='name'
+            label="Name"
+            size='small'
+            color='success'
+            value={userDetails.name}
+            onChange={handleInputChange}
+            fullWidth
+            required
+            sx={{ mb: 2 }}
+          />
+        )}
         <TextField
           size='small'
           name='email'
-          id="email"
           label="Email"
           color='success'
-          value={newUserDetails.email}
-          onChange={handleUserDetailsCreate}
+          value={userDetails.email}
+          onChange={handleInputChange}
           fullWidth
-          style={{ marginTop: '10px' }}
+          required
+          sx={{ mb: 2 }}
         />
-        <FormControl variant="outlined" size='small' fullWidth style={{ marginTop: '10px' }}>
+        <FormControl variant="outlined" size='small' fullWidth sx={{ mb: 2 }}>
           <InputLabel htmlFor="password" color='success'>Password</InputLabel>
           <OutlinedInput
             id="password"
             name='password'
             label="Password"
             color='success'
-            value={newUserDetails.password}
-            onChange={handleUserDetailsCreate}
+            value={userDetails.password}
+            onChange={handleInputChange}
             type={showPassword ? 'text' : 'password'}
             endAdornment={
               <InputAdornment position="end">
@@ -126,29 +130,55 @@ function LoginPage() {
             }
           />
         </FormControl>
-        <TextField
-          size='small'
-          name='selectCategory'
-          id="selectCategory"
-          color='success'
-          label="Categories"
-          helperText="Please select your categories"
-          value={newUserDetails.selectCategory}
-          onChange={handleUserDetailsCreate}
-          fullWidth
-          select
-          style={{ marginTop: '10px' }}
-        >
-          {Categories.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
-        <Button variant='contained' color='success' onClick={handleUserDetailsCreateSubmit} fullWidth style={{ marginTop: '15px' }}>
-          Login
+
+        {!isLogin && (
+          <>
+            <TextField
+              size='small'
+              name='role'
+              color='success'
+              label="Role"
+              value={userDetails.role}
+              onChange={handleInputChange}
+              fullWidth
+              select
+              required
+              sx={{ mb: 2 }}
+            >
+              {Categories.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              name='college'
+              label="College/Institution"
+              size='small'
+              color='success'
+              value={userDetails.college}
+              onChange={handleInputChange}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              name='phone'
+              label="Phone Number"
+              size='small'
+              color='success'
+              value={userDetails.phone}
+              onChange={handleInputChange}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+          </>
+        )}
+
+        <Button type="submit" variant='contained' color='success' fullWidth>
+          {isLogin ? 'Login' : 'Register'}
         </Button>
       </form>
+
       <Link variant='body2' color='success' mt={2}>
         Forget Password?
       </Link>
@@ -162,9 +192,14 @@ function LoginPage() {
         <Button color='success' fullWidth variant='outlined' startIcon={<FacebookIcon />}>Facebook</Button>
       </Box>
       <Typography color='success' mt={2}>
-        Don't have an account?&nbsp;
-        <Link color='success' fontWeight={'bold'}>
-          Create an Account
+        {isLogin ? "Don't have an account? " : "Already have an account? "}
+        <Link
+          component="button"
+          color='success'
+          fontWeight={'bold'}
+          onClick={() => setIsLogin(!isLogin)}
+        >
+          {isLogin ? 'Create an Account' : 'Login'}
         </Link>
       </Typography>
     </Stack>

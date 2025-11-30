@@ -5,7 +5,7 @@ import img1 from '../Assets/image/img1.jpg';
 import img2 from '../Assets/image/img2.jpg';
 import img3 from '../Assets/image/img3.jpg';
 import img4 from '../Assets/image/img4.jpg';
-import Landing3dPlant from './Landing3dPlant.jsx';
+
 import { Box, Button, colors, Dialog, DialogActions, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import FAQ from '../components/home/FAQ';
 import CoreFeatures from '../components/home/CoreFeatures';
@@ -32,8 +32,8 @@ function LandingPage() {
       { opacity: 1, y: 0, duration: 1.5, stagger: 0.2, ease: "power2.out" } // End state: opacity 1, move to original position
     );
   }, []);
-  
-  const textRef = useRef(null); 
+
+  const textRef = useRef(null);
   const description = (path) => {
     navigate('/explore'); // Navigate to the path when a button is clicked
   };
@@ -56,7 +56,7 @@ function LandingPage() {
     setOpen(false);
   };
 
-  
+
   // Initialize GSAP animation for leaf movement
   useEffect(() => {
     const moveLeaves = (e) => {
@@ -212,14 +212,12 @@ function LandingPage() {
             flexDirection: 'column'
           }}
         >
-          <Box height={'20rem'} display={isMobile? 'none':'unset'}>
-            <Landing3dPlant />
-          </Box>
-          <Stack height={isMobile?'40rem':'unset'} justifyContent={isMobile? 'center' :'unset'} ref={textRef} width={isMobile? '17rem' : 'unset'} alignItems={'flex-start'} ml={isMobile? '3rem':'5rem'}>
-            <Typography className="animated-text" variant="h2" fontWeight={'600'} color="#00ff00" style={{textShadow:'rgb(15 15 15) 2px 2px'}}>
+
+          <Stack height={isMobile ? '40rem' : 'unset'} justifyContent={isMobile ? 'center' : 'unset'} ref={textRef} width={isMobile ? '17rem' : 'unset'} alignItems={'flex-start'} ml={isMobile ? '3rem' : '5rem'}>
+            <Typography className="animated-text" variant="h2" fontWeight={'600'} color="#00ff00" style={{ textShadow: 'rgb(15 15 15) 2px 2px' }}>
               AROMA
             </Typography>
-            <Typography className="animated-text" variant="body1" color="white" gutterBottom margin={'17px 0px 21px 0px'} style={{textShadow:'rgb(15 15 15) 2px 2px'}}>
+            <Typography className="animated-text" variant="body1" color="white" gutterBottom margin={'17px 0px 21px 0px'} style={{ textShadow: 'rgb(15 15 15) 2px 2px' }}>
               AROMA is a digital platform that harnesses the healing power of plants and herbs by combining ancient knowledge with modern technology. It offers seamless access to natural remedies, making traditional herbal wisdom both accessible and relevant for today’s generation.
             </Typography>
             <Button className="animated-text" onClick={() => description()} variant="contained" color='success'>
@@ -250,7 +248,7 @@ function LandingPage() {
           justifyContent={'center'}
           fontWeight={'600'}
           m={'30px 30px 20px 30px'}
-          mb={isMobile? '4.5rem': 'unset'}
+          mb={isMobile ? '4.5rem' : 'unset'}
           variant="h4"
           width={'inherit'}
         >

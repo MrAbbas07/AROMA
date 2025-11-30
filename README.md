@@ -1,19 +1,19 @@
-Here’s a simple yet informative `README.md` template for your **Ashoka 3D Virtual Herbal Garden Login Page** project. You can copy-paste and update it based on your repo details:
+Here’s a simple yet informative `README.md` template for your **AROMA 3D Virtual Herbal Garden Login Page** project. You can copy-paste and update it based on your repo details:
 
 
 ## 📖 About the Project
 
-The **Ashoka 3D Virtual Herbal Garden** is part of the AYUSH Ministry's initiative to promote awareness of traditional medicinal plants. This login module serves as the gateway for users to access the interactive platform. Built with user-centric design in mind, the login system is fast, modern, and integrates with backend services to ensure a smooth authentication experience.
+The **AROMA 3D Virtual Herbal Garden** is part of the AYUSH Ministry's initiative to promote awareness of traditional medicinal plants. This login module serves as the gateway for users to access the interactive platform. Built with user-centric design in mind, the login system is fast, modern, and integrates with backend services to ensure a smooth authentication experience.
 
-This UI component will be integrated into the broader Ashoka platform which features:
+This UI component will be integrated into the broader AROMA platform which features:
 - A 3D interactive garden view
 - Information panels on each herbal plant
 
 ---
 
-# 🌿 Ashoka 3D Virtual Herbal Garden - Login Page
+# 🌿 AROMA 3D Virtual Herbal Garden - Login Page
 
-A React-based login and registration UI component built using Material-UI for the Ashoka 3D Virtual Herbal Garden project. The app allows users to register with their name, email, and password and includes social login buttons for Google and Facebook (UI only).
+A React-based login and registration UI component built using Material-UI for the AROMA 3D Virtual Herbal Garden project. The app allows users to register with their name, email, and password and includes social login buttons for Google and Facebook (UI only).
 
 ---
 
@@ -75,13 +75,13 @@ Make sure you have a backend server running at `http://localhost:3001` with a `P
 Example request body:
 ```json
 {
-  "name": "Ashoka",
-  "email": "ashoka@example.com",
+  "name": "AROMA",
+  "email": "aroma@example.com",
   "password": "secret123"
 }
 ```
 
-Visit the [ashoka-api](https://github.com/Bittukr7479/Ashoka-api) repository for the backend code.
+Visit the [aroma-api](https://github.com/Bittukr7479/Ashoka-api) repository for the backend code.
 
 ---
 

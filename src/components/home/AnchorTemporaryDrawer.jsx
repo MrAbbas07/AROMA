@@ -6,13 +6,21 @@ import {
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useTheme } from '@mui/material/styles';
-import chatBot from '../../Pages/ChatBotPage';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 export default function RightSideDrawer() {
   const [state, setState] = React.useState({
     right: false,
   });
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Get user data from context
+  const { user, logout } = useAuth();
 
   const toggleDrawer = (open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -20,10 +28,11 @@ export default function RightSideDrawer() {
     }
     setState({ right: open });
   };
-  const theme = useTheme();
 
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
+  const handleSignOut = () => {
+    logout();
+    navigate('/');
+  };
 
   const profile = () => (
     <Box textAlign="center" p={2}>
@@ -33,19 +42,19 @@ export default function RightSideDrawer() {
         sx={{ width: 100, height: 100, mx: 'auto', mb: 2 }}
       />
       <Typography variant="h5" fontWeight="bold">
-        Shreya kumari
+        {user.name || 'Guest User'}
       </Typography>
       <Typography variant="body2" color="text.secondary">
-        <b>Student </b><br />
-        Bakhtiyarpur College of Engineering
+        <b>{user.role || 'Visitor'}</b><br />
+        {user.college || 'Welcome to AROMA'}
       </Typography>
       <Divider sx={{ my: 2 }} />
       <Typography variant="body1" fontWeight="bold">
-        Contact Info: <br/>
-        +91**********
+        Contact Info: <br />
+        {user.phone || 'N/A'}
       </Typography>
       <Typography variant="body2" color="text.secondary">
-        Email: shreykumari@example.com
+        Email: {user.email || 'N/A'}
       </Typography>
     </Box>
   );
@@ -74,16 +83,24 @@ export default function RightSideDrawer() {
       </List>
       <Divider />
       <List>
-        {['Collection', 'Expart Support', 'Sign out'].map((text, index) => (
+        {['Collection', 'Expert Support'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index === 2 ? <InboxIcon /> : <Button><MailIcon /></Button>}
+                <InboxIcon />
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
           </ListItem>
         ))}
+        <ListItem disablePadding>
+          <ListItemButton onClick={handleSignOut}>
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sign out" />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   );
